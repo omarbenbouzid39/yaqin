@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الأذكار الإسلامي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Traditional Arabic', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f4e6;
+            color: #4a4a4a;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #1e4c45;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background-color: #3a6351;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 15px;
+            cursor: pointer;
+            color: #f8f4e6;
+            font-size: 18px;
+            text-align: center;
+            flex-grow: 1;
+            transition: background-color 0.3s;
+        }
+        
+        .tab:hover, .tab.active {
+            background-color: #274b39;
+        }
+        
+        .content {
+            background-color: #fff;
+            border-radius: 0 0 15px 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .dhikr-item {
+            background-color: #f0f0f0;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .dhikr-text {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .dhikr-count {
+            text-align: center;
+            font-size: 16px;
+            color: #1e4c45;
+            font-weight: bold;
+        }
+        
+        .counter-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .counter-btn {
+            background-color: #1e4c45;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        
+        .counter-btn:hover {
+            background-color: #274b39;
+        }
+        
+        .counter-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .counter-display {
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin: 0 15px;
+            border: 2px solid #1e4c45;
+        }
+        
+        .reset-btn {
+            background-color: #a65959;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background-color: #8e4a4a;
+        }
+        
+        .prayer-times {
+            text-align: center;
+        }
+        
+        .time-card {
+            display: inline-block;
+            background-color: #f0f0f0;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            width: calc(33.33% - 20px);
+            text-align: center;
+        }
+        
+        .time-name {
+            font-weight: bold;
+            color: #1e4c45;
+            margin-bottom: 5px;
+        }
+        
+        .qibla-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .compass {
+            width: 200px;
+            height: 200px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="%231e4c45" stroke-width="2"/><circle cx="50" cy="50" r="5" fill="%231e4c45"/><polygon points="50,10 46,50 50,40 54,50" fill="%231e4c45"/></svg>');
+            background-size: contain;
+            margin: 0 auto;
+            transition: transform 2s;
+            position: relative;
+        }
+        
+        .compass:before {
+            content: "N";
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #1e4c45;
+            font-weight: bold;
+        }
+        
+        .settings-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .submit-btn {
+            background-color: #1e4c45;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #274b39;
+        }
+        
+        /* Ad container */
+        .ad-container {
+            width: 100%;
+            height: 90px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            border: 1px dashed #aaa;
+            border-radius: 5px;
+        }
+        
+        .ad-text {
+            color: #888;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex-basis: 50%;
+                font-size: 16px;
+            }
+            
+            .time-card {
+                width: calc(50% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>تطبيق الأذكار الإسلامي</h1>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="morning">أذكار الصباح</div>
+            <div class="tab" data-tab="evening">أذكار المساء</div>
+            <div class="tab" data-tab="prayer">مواقيت الصلاة</div>
+            <div class="tab" data-tab="qibla">القبلة</div>
+            <div class="tab" data-tab="settings">الإعدادات</div>
+        </div>
+        
+        <div class="content">
+            <!-- أذكار الصباح -->
+            <div class="tab-content active" id="morning">
+                <div class="dhikr-item">
+                    <div class="dhikr-text">
+                        أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ، اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ، لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ، لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ
+                    </div>
+                    <div class="dhikr-count">عدد المرات: 1</div>
+                    <div class="counter-container">
+                        <button class="counter-btn">+</button>
+                        <div class="counter-display">0</div>
+                        <button class="reset-btn">↺</button>
+                    </div>
+                </div>
+                
+                <div class="dhikr-item">
+                    <div class="dhikr-text">
+                        اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ
+                    </div>
+                    <div class="dhikr-count">عدد المرات: 1</div>
+                    <div class="counter-container">
+                        <button class="counter-btn">+</button>
+                        <div class="counter-display">0</div>
+                        <button class="reset-btn">↺</button>
+                    </div>
+                </div>
+                
+                <div class="dhikr-item">
+                    <div class="dhikr-text">
+                        سُبْحَانَ اللَّهِ وَبِحَمْدِهِ
+                    </div>
+                    <div class="dhikr-count">عدد المرات: 100</div>
+                    <div class="counter-container">
+                        <button class="counter-btn">+</button>
+                        <div class="counter-display">0</div>
+                        <button class="reset-btn">↺</button>
+                    </div>
+                </div>
+                
+                <!-- Ad container -->
+                <div class="ad-container">
+                    <div class="ad-text">مساحة إعلانية</div>
+                </div>
+            </div>
+            
+            <!-- أذكار المساء -->
+            <div class="tab-content" id="evening">
+                <div class="dhikr-item">
+                    <div class="dhikr-text">
+                        أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ
+                    </div>
+                    <div class="dhikr-count">عدد المرات: 1</div>
+                    <div class="counter-container">
+                        <button class="counter-btn">+</button>
+                        <div class="counter-display">0</div>
+                        <button class="reset-btn">↺</button>
+                    </div>
+                </div>
+                
+                <div class="dhikr-item">
+                    <div class="dhikr-text">
+                        اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ
+                    </div>
+                    <div class="dhikr-count">عدد المرات: 1</div>
+                    <div class="counter-container">
+                        <button class="counter-btn">+</button>
+                        <div class="counter-display">0</div>
+                        <button class="reset-btn">↺</button>
+                    </div>
+                </div>
+                
+                <div class="dhikr-item">
+                    <div class="dhikr-text">
+                        أعوذ بكلمات الله التامات من شر ما خلق
+                    </div>
+                    <div class="dhikr-count">عدد المرات: 3</div>
+                    <div class="counter-container">
+                        <button class="counter-btn">+</button>
+                        <div class="counter-display">0</div>
+                        <button class="reset-btn">↺</button>
+                    </div>
+                </div>
+                
+                <!-- Ad container -->
+                <div class="ad-container">
+                    <div class="ad-text">مساحة إعلانية</div>
+                </div>
+            </div>
+            
+            <!-- مواقيت الصلاة -->
+            <div class="tab-content" id="prayer">
+                <div class="prayer-times">
+                    <h2>مواقيت الصلاة اليوم</h2>
+                    <div class="time-card">
+                        <div class="time-name">الفجر</div>
+                        <div class="time-value" id="fajr-time">--:--</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-name">الشروق</div>
+                        <div class="time-value" id="sunrise-time">--:--</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-name">الظهر</div>
+                        <div class="time-value" id="dhuhr-time">--:--</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-name">العصر</div>
+                        <div class="time-value" id="asr-time">--:--</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-name">المغرب</div>
+                        <div class="time-value" id="maghrib-time">--:--</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-name">العشاء</div>
+                        <div class="time-value" id="isha-time">--:--</div>
+                    </div>
+                </div>
+                
+                <!-- Ad container -->
+                <div class="ad-container">
+                    <div class="ad-text">مساحة إعلانية</div>
+                </div>
+            </div>
+            
+            <!-- القبلة -->
+            <div class="tab-content" id="qibla">
+                <div class="qibla-container">
+                    <h2>اتجاه القبلة</h2>
+                    <p>اضغط على زر تحديد القبلة للعثور على اتجاه القبلة</p>
+                    <div class="compass" id="compass"></div>
+                    <button id="find-qibla" class="submit-btn" style="margin-top: 20px;">تحديد القبلة</button>
+                </div>
+                
+                <!-- Ad container -->
+                <div class="ad-container">
+                    <div class="ad-text">مساحة إعلانية</div>
+                </div>
+            </div>
+            
+            <!-- الإعدادات -->
+            <div class="tab-content" id="settings">
+                <form class="settings-form">
+                    <div class="form-group">
+                        <label for="location">الموقع:</label>
+                        <input type="text" id="location" placeholder="أدخل المدينة">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="calculation-method">طريقة حساب الصلاة:</label>
+                        <select id="calculation-method">
+                            <option value="mwl">رابطة العالم الإسلامي</option>
+                            <option value="isna">الجمعية الإسلامية لأمريكا الشمالية</option>
+                            <option value="egypt">الهيئة المصرية العامة للمساحة</option>
+                            <option value="makkah">جامعة أم القرى، مكة</option>
+                            <option value="karachi">جامعة العلوم الإسلامية، كراتشي</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notifications">الإشعارات:</label>
+                        <select id="notifications">
+                            <option value="all">كل الصلوات</option>
+                            <option value="fajr">الفجر فقط</option>
+                            <option value="none">بدون إشعارات</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" class="submit-btn">حفظ الإعدادات</button>
+                </form>
+                
+                <!-- Ad container -->
+                <div class="ad-container">
+                    <div class="ad-text">مساحة إعلانية</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // تبديل بين التبويبات
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // إزالة الفئة النشطة من جميع التبويبات
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // إضافة الفئة النشطة إلى التبويب المحدد
+                tab.classList.add('active');
+                
+                // عرض المحتوى المرتبط بالتبويب
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // وظيفة عداد الأذكار
+        document.querySelectorAll('.counter-btn').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const display = btn.nextElementSibling;
+                let count = parseInt(display.textContent);
+                display.textContent = count + 1;
+            });
+        });
+        
+        // وظيفة إعادة تعيين العداد
+        document.querySelectorAll('.reset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const display = btn.previousElementSibling;
+                display.textContent = "0";
+            });
+        });
+        
+        // وظيفة محاكاة مواقيت الصلاة (بيانات وهمية للعرض)
+      
+async function fetchPrayerTimes(lat, lng) {
+    const method = 5; // الهيئة المصرية العامة للمساحة
+    const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${method}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const timings = data.data.timings;
+    document.getElementById('fajr-time').textContent = timings.Fajr;
+    document.getElementById('sunrise-time').textContent = timings.Sunrise;
+    document.getElementById('dhuhr-time').textContent = timings.Dhuhr;
+    document.getElementById('asr-time').textContent = timings.Asr;
+    document.getElementById('maghrib-time').textContent = timings.Maghrib;
+    document.getElementById('isha-time').textContent = timings.Isha;
+
+    document.querySelector('.prayer-times h2').textContent =
+        `مواقيت الصلاة في ${data.data.meta.timezone.split('/')[1] || 'مدينتك'} اليوم`;
+
+    scheduleAdhan(timings);
+}
+
+
+// الحصول على الموقع الجغرافي
+function getLocationAndFetchTimes() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+    .then(res => res.json())
+    .then(loc => {
+        const city = loc.address.city || loc.address.town || loc.address.village || loc.address.state;
+        document.querySelector('.prayer-times h2').textContent = `مواقيت الصلاة في ${city} اليوم`;
+    });
+
+        }, () => {
+            alert("لم نتمكن من الحصول على موقعك.");
+        });
+    } else {
+        alert("المتصفح لا يدعم تحديد الموقع.");
+    }
+}
+
+window.addEventListener('load', getLocationAndFetchTimes);
+if ("Notification" in window) {
+    Notification.requestPermission();
+}
+
+
+        
+        // تحديد القبلة (محاكاة)
+     
+document.getElementById('find-qibla').addEventListener('click', () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const { latitude, longitude } = position.coords;
+            fetch(`https://api.aladhan.com/v1/qibla/${latitude}/${longitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    const qiblaDirection = data.data.direction;
+                    document.getElementById('compass').style.transform = `rotate(${qiblaDirection}deg)`;
+                });
+        }, () => {
+            alert("لم نتمكن من تحديد موقعك.");
+        });
+    } else {
+        alert("المتصفح لا يدعم تحديد الموقع.");
+    }
+});
+
+
+       
+const adhanAudio = new Audio("adhan.mp3");
+
+function scheduleAdhan(timings) {
+    const now = new Date();
+
+    const prayerNames = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+    prayerNames.forEach(name => {
+        const timeStr = timings[name];
+        const [hours, minutes] = timeStr.split(':').map(Number);
+
+        const prayerTime = new Date();
+        prayerTime.setHours(hours, minutes, 0, 0);
+
+        const diff = prayerTime - now;
+        if (diff > 0) {
+            setTimeout(() => {
+                playAdhan();
+                showNotification(name);
+            }, diff);
+        }
+    });
+}
+
+function playAdhan() {
+    adhanAudio.play();
+}
+
+function showNotification(prayerName) {
+    if (Notification.permission === "granted") {
+        new Notification(`حان الآن وقت صلاة ${prayerName}`);
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification(`حان الآن وقت صلاة ${prayerName}`);
+            }
+        });
+    }
+}
+
+
+    </script>
+</body>
+</html>
